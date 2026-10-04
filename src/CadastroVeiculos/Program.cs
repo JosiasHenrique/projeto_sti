@@ -1,5 +1,7 @@
+using CadastroVeiculos.Data;
 using CadastroVeiculos.Models;
 
+// Teste do model Veiculo
 var veiculo = new Veiculo
 {
     Placa = "ABC1D23",
@@ -19,6 +21,23 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Inicializa o singleton de conexão
+var connectionString = builder.Configuration.GetConnectionString("Default")
+    ?? throw new InvalidOperationException("String de conexão 'Default' não encontrada.");
+ConexaoFactory.Inicializar(connectionString);
+
+// Teste do singleton
+var f1 = ConexaoFactory.GetInstance();
+var f2 = ConexaoFactory.GetInstance();
+Console.WriteLine(f1 == f2 ? "Singleton OK: mesma instância." : "Singleton falhou.");
+
+// Teste de conexão com o banco
+using (var conexao = f1.CriarConexao())
+{
+    conexao.Open();
+    Console.WriteLine("Conectado ao banco com sucesso!");
+}
 
 var app = builder.Build();
 
