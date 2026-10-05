@@ -1,0 +1,73 @@
+@model List<Veiculo>
+@{
+    ViewData["Title"] = "Veículos";
+    string? termo = ViewBag.Termo;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Veículos</h1>
+    <a asp-action="Cadastrar" class="btn btn-primary">Novo veículo</a>
+</div>
+
+@if (TempData["Sucesso"] != null)
+{
+    <div class="alert alert-success">@TempData["Sucesso"]</div>
+}
+@if (TempData["Erro"] != null)
+{
+    <div class="alert alert-danger">@TempData["Erro"]</div>
+}
+
+<form asp-action="Index" method="get" class="d-flex gap-2 mb-3">
+    <input type="text" name="termo" value="@termo" class="form-control"
+           placeholder="Pesquisar por placa ou modelo" />
+    <button type="submit" class="btn btn-outline-secondary">Pesquisar</button>
+    @if (!string.IsNullOrEmpty(termo))
+    {
+        <a asp-action="Index" class="btn btn-link">Limpar</a>
+    }
+</form>
+
+@if (Model.Count == 0)
+{
+    <p class="text-muted">Nenhum veículo encontrado.</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Placa</th>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th>Cor</th>
+                    <th>Ano</th>
+                    <th>Porte</th>
+                    <th>Tipo de carga</th>
+                    <th>Chassi</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var v in Model)
+                {
+                    <tr>
+                        <td>@v.Placa</td>
+                        <td>@v.Marca</td>
+                        <td>@v.Modelo</td>
+                        <td>@v.Cor</td>
+                        <td>@v.Ano</td>
+                        <td>@v.Porte</td>
+                        <td>@v.TipoCarga</td>
+                        <td>@v.Chassis</td>
+                        <td class="text-nowrap">
+                            <a asp-action="Editar" asp-route-id="@v.Id" class="btn btn-sm btn-outline-primary">Editar</a>
+                            <a asp-action="Excluir" asp-route-id="@v.Id" class="btn btn-sm btn-outline-danger">Excluir</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
